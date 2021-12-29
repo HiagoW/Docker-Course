@@ -3,6 +3,7 @@ kind: Service
 metadata:
   name: svc-pod-1-loadbalancer
 spec:
+  # Tem integração com loadbalancer dos cloud providers
   type: LoadBalancer
   ports:
     - port: 80

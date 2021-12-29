@@ -5,6 +5,8 @@ metadata:
 spec:
   type: NodePort
   ports:
+    # Permite acesso externo por localhost:30000 que redireciona para porta 80 do pod
+    # Todos nós do cluster compartilham a mesma porta
     - port: 80
       nodePort: 30000
   selector:

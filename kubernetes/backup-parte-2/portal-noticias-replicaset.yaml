@@ -1,4 +1,5 @@
 apiVersion: apps/v1
+# Preferir o deployment, pois permite controlar as versões
 kind: ReplicaSet
 metadata:
   name: portal-noticias-replicaset

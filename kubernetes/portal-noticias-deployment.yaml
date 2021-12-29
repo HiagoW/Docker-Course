@@ -1,4 +1,5 @@
 apiVersion: apps/v1
+# Permite restartar pod automaticamente em caso de falha e controle de versão
 kind: Deployment
 metadata:
   name: portal-noticias-deployment
@@ -13,11 +14,37 @@ spec:
         - name: portal-noticias-container
           image: aluracursos/portal-noticias:1
           ports:
+            # Indica que container escuta na porta 80, mas mapeamento de porta é feito no svc-portal-noticias
             - containerPort: 80
           envFrom:
+            # Aplica variaveis de ambiente do portal-configmap.yaml (metadata name:portal-configmap)
             - configMapRef:
                 name: portal-configmap
+          # Testa requisição get no /, porta 80 (pois é no contexto do container), a cada 10 segundos, com delay inicial de 20 segundos (para dar tempo de subir a aplicação)
+          # Se, após 3 vezes, retornar status < 200 ou >= 400, vai reiniciar o container
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            periodSeconds: 10
+            failureThreshold: 3
+            initialDelaySeconds: 20
+          # Quando o teste passar, indica que container está pronto para receber requisições
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            periodSeconds: 10
+            # Neste caso, após 6 falhas, vai ignorar o readinessPRobe e enviar requisições mesmo assim
+            failureThreshold: 5
+            initialDelaySeconds: 3
+          # Indica que precisa de quantidade x de CPU
+          resources:
+            requests:
+              cpu: 10m
+  # Sobe 3 réplicas
   replicas: 3
+  # Aplica dpeloyment nos pods com label app: portal-noticias
   selector:
     matchLabels:
       app: portal-noticias

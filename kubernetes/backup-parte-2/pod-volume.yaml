@@ -12,12 +12,15 @@ spec:
     - name: jenkins-container
       image: jenkins:alpine
       volumeMounts:
+        # Caminho no container
         - mountPath: /volume-dentro-do-container
           name: primeiro-volume
   volumes:
     - name: primeiro-volume
       hostPath:
+        # Caminho no host
         path: /C/Users/013997631/Desktop/primeiro-volume
+        # Cria se não existir
         type: DirectoryOrCreate
 
         

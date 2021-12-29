@@ -1,8 +1,11 @@
 apiVersion: apps/v1
+# Permite linkar um pod à um ou mais pvc's, e mesmo ao reiniciar o pod, a referência ao pvc é persistida, diferente do deployment
+# Cria o PersistentVolume automaticamente
 kind: StatefulSet
 metadata:
   name: sistema-noticias-statefulset
 spec:
+  # Apenas 1 replica
   replicas: 1
   template:
     metadata:
@@ -19,11 +22,27 @@ spec:
             - configMapRef:
                 name: sistema-configmap
           volumeMounts:
+            # Nome do PVC e local onde será montado no container
             - name: imagens
               mountPath: /var/www/html/uploads
             - name: sessao
               mountPath: /tmp
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            periodSeconds: 10
+            failureThreshold: 3
+            initialDelaySeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /inserir_noticias.php
+              port: 80
+            periodSeconds: 10
+            failureThreshold: 5
+            initialDelaySeconds: 3
       volumes:
+        # Indica qual PVC usar
         - name: imagens
           persistentVolumeClaim:
             claimName: imagens-pvc

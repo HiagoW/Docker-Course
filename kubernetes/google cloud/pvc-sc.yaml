@@ -1,11 +1,13 @@
 apiVersion: v1
+# Como usa StorageClass, não precisa definir PV, é criado automaticamente
 kind: PersistentVolumeClaim
 metadata:
     name: pvc-2
 spec:
     accessModes:
-        - ReadWriteOnde
+        - ReadWriteOnce
     resources:
         requests:
             storage: 10Gi
+    # Nome definido em sc.yaml
     storageClassName: slow

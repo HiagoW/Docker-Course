@@ -1,10 +1,13 @@
 apiVersion: v1
+# Necessário para persistent volume
 kind: PersistentVolumeClaim
 metadata:
   name: imagens-pvc
 spec:
   accessModes:
+    # Apenas 1 pode pode escrever/ler por vez
     - ReadWriteOnce
   resources:
     requests:
+      # Indica que necessita de 1GB
       storage: 1Gi

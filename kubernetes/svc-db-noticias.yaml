@@ -3,6 +3,8 @@ kind: Service
 metadata:
   name: svc-db-noticias
 spec:
+  # Apenas acesso interno do cluster
+  # Pode acessar pelo nome do serviço: svc-db-noticias:3306
   type: ClusterIP
   ports:
     - port: 3306
